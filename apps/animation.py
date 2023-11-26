@@ -4,7 +4,7 @@ import os
 import numpy as np
 import torch
 from tqdm import tqdm
-
+import joblib
 from lib.net.geometry import rotation_matrix_to_angle_axis
 from lib.smplx.lbs import general_lbs
 
@@ -18,7 +18,7 @@ args = parser.parse_args()
 device = torch.device(f"cuda:{args.gpu}")
 
 econ_dict = torch.load(f"./results/econ/cache/{args.name}/econ.pt")
-smplx_pkl = np.load(f"./examples/motions/{args.motion}.pkl", allow_pickle=True)
+smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl")
 smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
 smplx_transl = smplx_pkl['transl']
 smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
