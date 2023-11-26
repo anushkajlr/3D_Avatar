@@ -19,9 +19,10 @@ device = torch.device(f"cuda:{args.gpu}")
 
 econ_dict = torch.load(f"./results/econ/cache/{args.name}/econ.pt")
 smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl")
-smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
-smplx_transl = smplx_pkl['transl']
-smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
+# smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
+# smplx_transl = smplx_pkl['transl']
+# smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
+smplx_pose = smplx_pkl['pose']
 smplx_pose[:, 23:23 + 2] *= 0.0    # remove the pose of eyes
 
 n_start = 0
