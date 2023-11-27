@@ -20,8 +20,8 @@ device = torch.device(f"cuda:{args.gpu}")
 econ_dict = torch.load(f"./results/econ/cache/{args.name}/econ.pt")
 smplx_pkl = np.load(f"./examples/motions/{args.motion}.pkl", allow_pickle=True)
 print("looking a structure of smplx_pkl")
-for k,v in smplx_pkl:
-    print(k,v.shape)
+for k in smplx_pkl:
+    print(k,smplx_pkl[k])
 smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
 print("taking a look as shape of theta parameters")
 print(smplx_pose_mat.shape)
