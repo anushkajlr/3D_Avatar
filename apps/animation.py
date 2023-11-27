@@ -26,8 +26,8 @@ smplx_pose = smplx_pkl[1]['pose']
 smplx_pose[:, 23:23 + 2] *= 0.0    # remove the pose of eyes
 
 n_start = 0
-n_end = 100 * 25
-# n_end = smplx_pose.shape[0]
+# n_end = 100 * 25
+n_end = smplx_pose.shape[0]
 n_step = 1
 
 output_dir = f"./results/econ/seq"
@@ -37,7 +37,7 @@ motion_output = {"v_seq": [], "f": None, "normal": None, "rgb": None}
 
 for oid, fid in enumerate(tqdm(range(n_start, n_end, n_step))):
     posed_econ_verts, _ = general_lbs(
-        pose=smplx_pose.reshape(-1, 55 * 3)[fid:fid + 1].to(device),
+        pose=smplx_pose[fid:fid + 1].to(device),
         v_template=econ_dict["v_template"].to(device),
         posedirs=econ_dict["posedirs"].to(device),
         J_regressor=econ_dict["J_regressor"].to(device),
@@ -47,10 +47,10 @@ for oid, fid in enumerate(tqdm(range(n_start, n_end, n_step))):
     smplx_verts = posed_econ_verts[0].float().detach().cpu().numpy()
     trans_scale = np.array([1.0, 0.1, 0.1])    # to mitigate z-axis jittering
 
-    motion_output["v_seq"].append((smplx_verts + smplx_transl[fid] * trans_scale).astype(
+    motion_output["v_seq"].append((smplx_verts).astype(
         np.float32
     ))
-
+print(motion_output["v_seq"])
 motion_output["v_seq"] = np.stack(motion_output["v_seq"], axis=0)
 motion_output["f"] = econ_dict["faces"].astype(np.uint32)
 motion_output["normal"] = econ_dict["final_normal"].astype(np.float32)
