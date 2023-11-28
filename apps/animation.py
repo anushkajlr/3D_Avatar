@@ -29,7 +29,7 @@ smplx_pose = smplx_pkl[1]['joints3d']
 x = []
 for i in range(len(smplx_pose)):
     x.append(np.vstack([smplx_pose[i],np.zeros((6, 3))]))
-smplx_pose = torch.tensor(np.array(x)).double()
+smplx_pose = torch.tensor(np.array(x)).float()
 # print("taking a look at shape of smplx_pose")
 # print(smplx_pose.shape)
 smplx_pose[:, 23:23 + 2] *= 0.0    # remove the pose of eyes 
