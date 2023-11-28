@@ -45,7 +45,7 @@ motion_output = {"v_seq": [], "f": None, "normal": None, "rgb": None}
 
 for oid, fid in enumerate(tqdm(range(n_start, n_end, n_step))):
     posed_econ_verts, _ = general_lbs(
-        pose=smplx_pose.reshape(-1, 49 * 3)[fid:fid + 1].to(device),
+        pose=smplx_pose.reshape(-1, 55 * 3)[fid:fid + 1].to(device),
         v_template=econ_dict["v_template"].to(device),
         posedirs=econ_dict["posedirs"].to(device),
         J_regressor=econ_dict["J_regressor"].to(device),
