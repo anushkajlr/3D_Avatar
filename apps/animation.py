@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from lib.net.geometry import rotation_matrix_to_angle_axis
 from lib.smplx.lbs import general_lbs
+import joblib
 
 # loading cfg file
 parser = argparse.ArgumentParser()
@@ -18,17 +19,15 @@ args = parser.parse_args()
 device = torch.device(f"cuda:{args.gpu}")
 
 econ_dict = torch.load(f"./results/econ/cache/{args.name}/econ.pt")
-smplx_pkl = np.load(f"./examples/motions/{args.motion}.pkl", allow_pickle=True)
-print("looking a structure of smplx_pkl")
-for k in smplx_pkl:
-    print(k,smplx_pkl[k])
-smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
-print("taking a look as shape of theta parameters")
-print(smplx_pose_mat.shape)
-smplx_transl = smplx_pkl['transl']
-smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
-print("taking a look at shape of smplx_pose")
-print(smplx_pose.shape)
+smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl", allow_pickle=True)
+# smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
+# print("taking a look as shape of theta parameters")
+# print(smplx_pose_mat.shape)
+# smplx_transl = smplx_pkl['transl']
+# smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
+smplx_pose = smplx_pkl['joints3d']
+# print("taking a look at shape of smplx_pose")
+# print(smplx_pose.shape)
 smplx_pose[:, 23:23 + 2] *= 0.0    # remove the pose of eyes
 
 n_start = 0
@@ -43,7 +42,7 @@ motion_output = {"v_seq": [], "f": None, "normal": None, "rgb": None}
 
 for oid, fid in enumerate(tqdm(range(n_start, n_end, n_step))):
     posed_econ_verts, _ = general_lbs(
-        pose=smplx_pose.reshape(-1, 55 * 3)[fid:fid + 1].to(device),
+        pose=smplx_pose.reshape(-1, 49 * 3)[fid:fid + 1].to(device),
         v_template=econ_dict["v_template"].to(device),
         posedirs=econ_dict["posedirs"].to(device),
         J_regressor=econ_dict["J_regressor"].to(device),
@@ -52,8 +51,8 @@ for oid, fid in enumerate(tqdm(range(n_start, n_end, n_step))):
     )
     smplx_verts = posed_econ_verts[0].float().detach().cpu().numpy()
     trans_scale = np.array([1.0, 0.1, 0.1])    # to mitigate z-axis jittering
-
-    motion_output["v_seq"].append((smplx_verts + smplx_transl[fid] * trans_scale).astype(
+    #+ smplx_transl[fid] * trans_scale
+    motion_output["v_seq"].append((smplx_verts).astype(
         np.float32
     ))
 
