@@ -25,7 +25,7 @@ smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl")
 # print(smplx_pose_mat.shape)
 # smplx_transl = smplx_pkl['transl']
 # smplx_pose = rotation_matrix_to_angle_axis(smplx_pose_mat.view(-1, 3, 3)).view(-1, 55, 3)
-smplx_pose = smplx_pkl['joints3d']
+smplx_pose = smplx_pkl[1]['joints3d']
 # print("taking a look at shape of smplx_pose")
 # print(smplx_pose.shape)
 smplx_pose[:, 23:23 + 2] *= 0.0    # remove the pose of eyes
