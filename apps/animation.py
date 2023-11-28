@@ -19,7 +19,7 @@ args = parser.parse_args()
 device = torch.device(f"cuda:{args.gpu}")
 
 econ_dict = torch.load(f"./results/econ/cache/{args.name}/econ.pt")
-smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl", allow_pickle=True)
+smplx_pkl = joblib.load(f"./examples/motions/{args.motion}.pkl")
 # smplx_pose_mat = torch.tensor(smplx_pkl['pred_thetas'])
 # print("taking a look as shape of theta parameters")
 # print(smplx_pose_mat.shape)
