@@ -34,8 +34,8 @@ for i in range (len(smplx_pose)):
 smplx_pose = torch.tensor(smplx_pose)
 
 n_start = 0
-n_end = 100 * 25
-# n_end = smplx_pose.shape[0]
+# n_end = 100 * 25
+n_end = smplx_pose.shape[0]
 n_step = 1
 
 output_dir = f"./results/econ/seq"
